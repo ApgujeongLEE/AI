@@ -409,20 +409,144 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dark);color:va
   transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1),
              transform 0.9s cubic-bezier(0.4,0,0.2,1);
 }
+/* S0 Chat Intro — Claude Light UI */
+.chat-label{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
+.chat-window{
+  background:#f5f4ef;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(0,0,0,0.6);
+  max-width:740px;margin:0 auto;
+}
+.chat-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;
+  background:#f5f4ef;
+  border-bottom:1px solid rgba(0,0,0,0.08);
+}
+.chat-dots{display:flex;gap:6px;}
+.chat-dots span{width:12px;height:12px;border-radius:50%;}
+.chat-dots span:nth-child(1){background:#ff5f57;}
+.chat-dots span:nth-child(2){background:#febc2e;}
+.chat-dots span:nth-child(3){background:#28c840;}
+.chat-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:600;color:#1a1a1a;
+}
+.chat-title-icon{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,#c97c3a,#d4914a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:white;
+}
+.chat-topbar-right{font-size:13px;color:#999;}
+
+/* Body */
+.chat-body{
+  padding:32px 28px;
+  display:flex;flex-direction:column;gap:28px;
+  background:#f5f4ef;
+}
+
+/* 사용자 메시지 */
+.chat-msg{display:flex;align-items:flex-start;gap:12px;}
+.chat-msg.user{flex-direction:column;align-items:flex-end;}
+.user-name{font-size:12px;color:#999;margin-bottom:6px;padding-right:4px;}
+.user-bubble{
+  background:#e8e7e1;
+  border-radius:18px 18px 4px 18px;
+  padding:14px 18px;
+  font-size:15px;line-height:1.7;color:#1a1a1a;
+  max-width:88%;text-align:left;
+}
+
+/* Claude 응답 */
+.chat-msg.claude{
+  flex-direction:row;align-items:flex-start;gap:14px;
+  opacity:0;transition:opacity 0.4s ease;
+}
+.chat-msg.claude.show{opacity:1;}
+.claude-avatar{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#c97c3a,#d4914a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:white;margin-top:2px;
+}
+.claude-bubble{
+  flex:1;
+  font-size:15px;line-height:1.75;color:#1a1a1a;
+  text-align:left;
+}
+.claude-msg-wrap{display:flex;flex-direction:column;flex:1;}
+
+/* 커서 */
+.cursor{
+  display:none;width:2px;height:1.1em;
+  background:#1a1a1a;margin-left:1px;
+  vertical-align:text-bottom;
+}
+.cursor.active{
+  display:inline-block;
+  animation:blink 0.9s ease infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.chat-hint{
+  margin-top:22px;font-size:14px;color:var(--muted);
+  opacity:0;transition:opacity 0.6s ease;text-align:center;
+}
+.chat-hint.show{opacity:1;}
+
 </style>
 </head>
 <body>
 <div class="bg-gradient"></div>
 <div class="progress" id="progress"></div>
-<div class="slide-num" id="slideNum">01 / 07</div>
+<div class="slide-num" id="slideNum">01 / 08</div>
 <button class="arrow" id="prev" onclick="go(-1)">←</button>
 <button class="arrow" id="next" onclick="go(1)">→</button>
 <div class="nav" id="nav"></div>
 
 <div class="deck">
 
+  <!-- S0: Claude 대화 인트로 -->
+  <div class="slide active" id="s0">
+    <div class="slide-inner" style="max-width:760px;">
+      <div class="chat-label">이 발표는 이렇게 시작됐습니다</div>
+      <div class="chat-window">
+        <div class="chat-topbar">
+          <div class="chat-dots"><span></span><span></span><span></span></div>
+          <div class="chat-title">
+            <div class="chat-title-icon">C</div>
+            Claude
+          </div>
+          <div class="chat-topbar-right">claude.ai</div>
+        </div>
+        <div class="chat-body">
+          <!-- 사용자 메시지 -->
+          <div class="chat-msg user" id="cm-user">
+            <div class="user-name">나</div>
+            <div class="user-bubble">
+              <span id="user-typing"></span><span class="cursor" id="user-cursor">|</span>
+            </div>
+          </div>
+          <!-- Claude 응답 -->
+          <div class="chat-msg claude" id="cm-claude">
+            <div class="claude-avatar">C</div>
+            <div class="claude-msg-wrap">
+              <div class="claude-name">Claude</div>
+              <div class="claude-bubble">
+                <span id="claude-typing"></span><span class="cursor" id="claude-cursor">|</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-hint" id="chat-hint">→ 키를 눌러 발표를 시작하세요</div>
+    </div>
+  </div>
+
   <!-- S1 -->
-  <div class="slide active" id="s1">
+  <div class="slide" id="s1">
     <div class="slide-inner">
       <div class="label">AI 채점 자동화 사례 발표</div>
       <h1>채점에 4시간을<br>쓰고 있었습니다</h1>
@@ -622,7 +746,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--dark);color:va
 </div>
 
 <script>
-const TOTAL=7;
+const TOTAL=8;
 let cur=0,painStarted=false,s3Phase2Active=false;
 const slides=document.querySelectorAll('.slide');
 const navEl=document.getElementById('nav');
@@ -641,38 +765,47 @@ function goTo(n){
   document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
   document.getElementById('progress').style.width=((cur+1)/TOTAL*100)+'%';
   document.getElementById('slideNum').textContent=(String(cur+1).padStart(2,'0'))+' / 0'+TOTAL;
-  if(cur===1&&!painStarted)startPain();
-  if(cur===5)startInsight();
-  if(cur===6)startS6();
-  if(cur!==6){s6Phase=0;const b=document.getElementById('s6-phase2');if(b)b.classList.remove('show');}
+  if(cur===2&&!painStarted)startPain();
+  if(cur===6)startInsight();
+  if(cur===7)startS6();
+  if(cur!==7){s6Phase=0;const b=document.getElementById('s6-phase2');if(b)b.classList.remove('show');}
 }
 
 function go(dir){
-  if(cur===1&&dir===1){
+  // S0: 첫 → 누르면 타이핑 시작, 완료 후 → 누르면 다음 슬라이드
+  if(cur===0&&dir===1){
+    const hint=document.getElementById('chat-hint');
+    if(!s0Done){
+      startS0();
+      return;
+    }
+    // 타이핑 완료 후에는 다음으로
+  }
+  if(cur===2&&dir===1){
     const ov=document.getElementById('s2-overlay');
     if(!ov.classList.contains('show')){ov.classList.add('show');return;}
   }
-  if(cur===1&&dir===-1){
+  if(cur===2&&dir===-1){
     const ov=document.getElementById('s2-overlay');
     if(ov.classList.contains('show')){ov.classList.remove('show');return;}
   }
-  if(cur===5&&dir===1){
+  if(cur===6&&dir===1){
     const io=document.getElementById('insight-overlay');
     if(!io.classList.contains('show')){io.classList.add('show');return;}
   }
-  if(cur===5&&dir===-1){
+  if(cur===6&&dir===-1){
     const io=document.getElementById('insight-overlay');
     if(io.classList.contains('show')){io.classList.remove('show');return;}
   }
-  if(cur===2&&dir===1&&!s3Phase2Active){triggerStrike();return;}
-  if(cur===2&&dir===-1&&s3Phase2Active){resetS3();return;}
+  if(cur===3&&dir===1&&!s3Phase2Active){triggerStrike();return;}
+  if(cur===3&&dir===-1&&s3Phase2Active){resetS3();return;}
   // S6 phases
-  if(cur===6&&dir===1){
+  if(cur===7&&dir===1){
     if(s6Phase<1){s6Phase++;showS6Phase();return;}
     if(s6Phase<3){s6Phase++;showS6Phase();return;}
     return;
   }
-  if(cur===6&&dir===-1){
+  if(cur===7&&dir===-1){
     if(s6Phase>0){s6Phase--;showS6Phase();return;}
   }
   goTo(cur+dir);
@@ -750,6 +883,52 @@ function closeFlowModal(e,force){
 }
 
 document.getElementById('progress').style.width=(1/TOTAL*100)+'%';
+
+// S0 chat animation
+const userMsg = '바이브 코딩으로 제작한 교육용 사이트를 교육 운영자들에게 핵심 내용만 10분 정도의 시간을 활용하여 발표하려고 해. 지루한 기술이나 단순 내용 전달이 아닌 좀 특별하게 프레젠테이션을 진행했으면 좋겠어.';
+const claudeReply = '좋아요. 먼저 핵심 질문 하나 — 발표를 듣고 나서, 청중에게 일어나길 바라는 가장 큰 변화가 뭔가요?';
+let s0Done = false;
+
+function typeText(el, text, speed, onDone){
+  let i = 0;
+  const interval = setInterval(()=>{
+    if(i < text.length){
+      el.textContent += text[i];
+      i++;
+    } else {
+      clearInterval(interval);
+      if(onDone) onDone();
+    }
+  }, speed);
+}
+
+function startS0(){
+  if(s0Done) return;
+  s0Done = true;
+  const userEl = document.getElementById('user-typing');
+  const userCursor = document.getElementById('user-cursor');
+  const claudeCursor = document.getElementById('claude-cursor');
+
+  // 1. Type user message
+  typeText(userEl, userMsg, 22, ()=>{
+    userCursor.style.display='none';
+    // 2. Show Claude row after pause
+    setTimeout(()=>{
+      document.getElementById('cm-claude').classList.add('show');
+      setTimeout(()=>{
+        typeText(document.getElementById('claude-typing'), claudeReply, 32, ()=>{
+          claudeCursor.style.display='none';
+          setTimeout(()=>{
+            document.getElementById('chat-hint').classList.add('show');
+          }, 400);
+        });
+      }, 300);
+    }, 600);
+  });
+}
+
+// 자동 시작 제거 — 첫 → 키 누를 때 시작
+// startS0() 는 go() 에서 호출
 
 let insightStarted=false;
 function startInsight(){
